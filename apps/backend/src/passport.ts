@@ -43,7 +43,7 @@ export function initPassport() {
           create: {
             email: profile.emails[0].value,
             name: profile.displayName,
-            // provider: 'GOOGLE',
+            provider: 'GOOGLE',
           },
           update: {
             name: profile.displayName,
