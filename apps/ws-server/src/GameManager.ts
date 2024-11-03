@@ -15,10 +15,10 @@ export class GameManager {
 
     addUser(socket : WebSocket) {
         this.users.push(socket)
-        
+        this.addHandler(socket)
     }
     removeUser(socket : WebSocket) {
-
+        this.users = this.users.filter(user => user !== socket)
     }
 
     private addHandler(socket : WebSocket) {
