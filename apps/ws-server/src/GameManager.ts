@@ -1,6 +1,6 @@
 import { WebSocket } from "ws";
 import { Game } from "./Game";
-import { INIT_GAME } from "@repo/common/config";
+import { INIT_GAME } from "@repo/common/messages";
 
 export class GameManager {
     private games      : Game[];

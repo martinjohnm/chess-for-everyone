@@ -1,4 +1,5 @@
-import { GAME_OVER, INIT_GAME, MOVE, MoveType } from "@repo/common/config";
+import { GAME_OVER, INIT_GAME, MOVE } from "@repo/common/messages";
+import { MoveType } from "@repo/common/types";
 import { Chess } from "chess.js";
 import { WebSocket } from "ws";
 
