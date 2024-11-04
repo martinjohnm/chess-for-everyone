@@ -118,4 +118,12 @@ passport.authenticate('google', {
 }),
 );
 
+router.get("/test",(req: Request, res: Response) => {
+  res.json({
+    'test' : "success"
+  });
+  
+}
+)
+
 export default router;

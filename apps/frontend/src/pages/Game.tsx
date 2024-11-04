@@ -1,0 +1,69 @@
+import { useUser } from "@repo/store/useUser"
+import { useSocket } from "../hooks/useSocket";
+import { useEffect, useState } from "react";
+import { Chess } from "chess.js";
+import { GAME_OVER, INIT_GAME, MOVE } from "@repo/common/messages";
+import { ChessBoard } from "../components/ChessBoard";
+
+import { Button } from "@repo/ui/button";
+
+
+export const Game = () => {
+
+    const socket = useSocket()
+    const user = useUser()
+    const [chess, _ ] = useState(new Chess())
+    const [board, setBoard] = useState(chess.board());
+
+    useEffect(() => {
+        if (!user) {
+          window.location.href = '/login';
+        }
+      }, [user]);
+
+    useEffect(() => {
+        if (!socket) {
+            return;
+        }
+        console.log("socket changes");
+        
+        socket.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            switch (message.type) {
+                case INIT_GAME:
+                    setBoard(chess.board())
+                    console.log("Game Initialized");
+                    break
+                case MOVE:
+                    const move = message.payload
+                    chess.move(move)
+                    setBoard(chess.board())
+                    console.log("Move made");
+                    break
+                case GAME_OVER:
+                    console.log('Game over');
+                    break
+            }
+        }
+    }, [socket])
+
+    if (!socket) return <div>Connecting...</div>
+    
+    return (
+        <div className="py-6 md:grid md:grid-cols-3 md:mx-auto md:container lg:max-w-5xl">
+            <div className="md:col-span-2 w-full flex justify-center">
+                <ChessBoard chess={chess} setBoard = {setBoard} board = {board} socket={socket}/>
+            </div>
+            <div className="md:col-span-1 flex justify-center rounded-lg bg-slate-300 dark:bg-[#262522]">
+                <div className="w-full h-full flex justify-center items-center">
+                    <Button className="bg-[#81b64c] p-4 mt-4 rounded-md w-2/3" onclick={() => {
+                        socket.send(JSON.stringify({
+                            type : INIT_GAME
+                        }))
+                    }}>Play</Button>
+                </div>
+            </div>
+        </div>
+    )
+
+}

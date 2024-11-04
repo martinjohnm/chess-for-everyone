@@ -1,24 +1,28 @@
 import { WebSocket } from "ws";
 import { Game } from "./Game";
-import { INIT_GAME } from "@repo/common/messages";
+import { INIT_GAME, MOVE } from "@repo/common/messages";
+
+
 
 export class GameManager {
-    private games      : Game[];
-    private pendingUser : WebSocket | null;
-    private users      : WebSocket[]
+    private games: Game[];
+    private pendingUser: WebSocket | null;
+    private users: WebSocket[]
 
     constructor() {
-        this.games      = []
+        this.games = []
         this.pendingUser = null
-        this.users      = []
+        this.users = []
     }
 
     addUser(socket : WebSocket) {
         this.users.push(socket)
         this.addHandler(socket)
     }
+
     removeUser(socket : WebSocket) {
         this.users = this.users.filter(user => user !== socket)
+        // stop the game here
     }
 
     private addHandler(socket : WebSocket) {
@@ -26,12 +30,26 @@ export class GameManager {
             const message = JSON.parse(data.toString())
 
             if (message.type == INIT_GAME) {
+                console.log(message);
+                
                 if (this.pendingUser) {
                     const game = new Game(this.pendingUser, socket)
+                    this.games.push(game)
+                    this.pendingUser = null
                 } else {
-                    this.pendingUser = socket
+                    this.pendingUser = socket;
+                }
+            }
+
+            if (message.type == MOVE) {
+                console.log(message);
+                
+                const game = this.games.find(game => game.player1 === socket || game.player2 === socket)
+                if (game) {
+                    game.makeMove(socket, message.payload.move)
                 }
             }
         })
+
     }
 }

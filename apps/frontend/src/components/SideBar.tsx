@@ -15,7 +15,7 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className={`flex ${isCollapsed ? 'w-20' : 'w-54'} p-4 transition-width duration-300 bg-slate-300 h-screen text-black dark:text-white dark:bg-gray-800`}>
+    <div className={`flex ${isCollapsed ? 'w-14' : 'w-50'} sticky top-0 p-4 transition-width duration-300 bg-slate-300 h-screen text-black dark:text-white dark:bg-[#262522]`}>
       <div className="flex flex-col justify-between h-full">
         {/* Sidebar Header */}
         <div>
@@ -42,7 +42,8 @@ interface SidebarLinkProps {
   isCollapsed: boolean;
 }
 
-const SidebarLink: React.FC<SidebarLinkProps> = ({ icon, label, isCollapsed }) => {
+const SidebarLink: React.FC<SidebarLinkProps> = ({ icon, label, isCollapsed}) => {
+
   return (
     <div className="flex items-center space-x-4 mb-4 text-black dark:text-white hover:text-white">
       <span className="text-xl">{icon}</span>
