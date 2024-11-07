@@ -9,7 +9,7 @@ export const useSocket = () => {
     const user = useUser()
     useEffect(() => {
         if (!user) return;
-        const ws = new WebSocket(`${ws_url}`);
+        const ws = new WebSocket(`${ws_url}?token=${user.token}`);
     
         ws.onopen = () => {
             console.log("connected")
