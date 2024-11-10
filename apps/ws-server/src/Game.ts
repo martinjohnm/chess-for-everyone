@@ -1,4 +1,4 @@
-import { Chess, Move, WHITE } from "chess.js";
+import { BLACK, Chess, Move, WHITE } from "chess.js";
 import { GAME_ENDED, GAME_RESULT, GAME_STATUS, INIT_GAME, MOVE } from "@repo/common/messages"
 import { randomUUID } from "crypto"
 import { socketManager, User } from "./SocketManager";
@@ -35,7 +35,7 @@ export class Game {
     seedMoves(moves : {
         id : string;
         gameId : string;
-        moveNumber : string;
+        moveNumber : number;
         from : string;
         to : string;
         comments : string | null;
@@ -172,6 +172,134 @@ export class Game {
                 }
             })
         ])
+    }
+
+    async makeMove(
+        user : User, 
+        move : Move
+    ) {
+        if (this.board.turn() === "w" && user.userId !== this.player1UserId){
+            return;
+        }
+
+        if (this.board.turn() === "b" && user.userId !== this.player2UserId) {
+            return;
+        }
+
+        if (this.result) {
+            console.error(`User ${user.userId} is making a move after game completion`);
+            return;
+        }
+
+        const moveTimeStamp = new Date(Date.now())
+
+        try {
+            // check for promotion
+
+            this.board.move({
+                from : move.from,
+                to : move.to
+            })
+        } catch(e) {
+            console.error("Error while making move");
+            return;
+        }
+
+        // after move update the timeer 
+        if (this.board.turn() === "b" ) {
+            this.player1TimeConsumed = this.player1TimeConsumed + (moveTimeStamp.getTime() - this.lastMoveTime.getTime())
+        }
+        if (this.board.turn() === "w") {
+            this.player2TimeConsumed = this.player2TimeConsumed + (moveTimeStamp.getTime() - this.lastMoveTime.getTime())
+        }
+
+        await this.addMoveToDb(move, moveTimeStamp)
+
+        // reset timer here
+
+        this.lastMoveTime = moveTimeStamp;
+
+        socketManager.broadcast(
+            this.gameId, 
+            JSON.stringify({
+                type : MOVE,
+                payload : { 
+                    move , 
+                    player1TimeConsumed: this.player1TimeConsumed, 
+                    player2TimeConsumed: this.player2TimeConsumed,
+                }
+            })
+        )
+
+        if (this.board.isGameOver()) {
+            const result = this.board.isDraw()
+            ? "DRAW"
+            : this.board.turn() === "b"
+                ? "WHITE_WINS"
+                : "BLACK_WINS"
+            this.endGame("COMPLETED", result)
+        }
+
+        this.moveCount++;
+    }
+
+    getPlayer1TimeConsumed() {
+        if (this.board.turn() === "w") {
+            return this.player1TimeConsumed + (new Date(Date.now()).getTime() - this.lastMoveTime.getTime())
+        }
+        return this.player1TimeConsumed
+    }
+
+    getPlayer2TimeConsumed() {
+        if (this.board.turn() === "b") {
+            return this.player2TimeConsumed + (new Date(Date.now()).getTime() - this.lastMoveTime.getTime())
+        }
+        return this.player2TimeConsumed
+    }
+
+    async exitGame(user : User) {
+        this.endGame('PLAYER_EXIT', user.userId === this.player2UserId ? 'WHITE_WINS' : 'BLACK_WINS');
+    }
+
+    async endGame(status : GAME_STATUS, result : GAME_RESULT) {
+        const updatedGame = await db.game.update({
+            data : {
+                status, 
+                result : result
+            },
+            where : {
+                id : this.gameId
+            }, 
+            include : {
+                moves : {
+                    orderBy : {
+                        moveNumber : "asc"
+                    }
+                },
+                blackPlayer : true,
+                whitePlayer : true
+            }
+        })
+
+        socketManager.broadcast(
+            this.gameId,
+            JSON.stringify({
+                type : GAME_ENDED,
+                payload : {
+                    result,
+                    status,
+                    moves : updatedGame.moves,
+                    blackPlayer : {
+                        id : updatedGame.blackPlayer.id,
+                        name : updatedGame.blackPlayer.name
+                    },
+                    whitePlayer : {
+                        id : updatedGame.whitePlayer.id,
+                        name : updatedGame.whitePlayer.name
+                    }
+                }
+            })
+        )
     }
 
     
