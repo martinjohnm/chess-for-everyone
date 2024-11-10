@@ -22,8 +22,19 @@ export class GameManager {
       this.addHandler(user)
     }
 
-    removeGame(gameId : string) {
-      this.games = this.games.filter((g) => g.gameId !== gameId)
+    removeUser(socket : WebSocket) {
+      const user = this.users.find((user) => user.socket === socket);
+      if (!user) {
+        console.error("User not found");
+        return;
+      }
+      
+      this.users = this.users.filter((user) => user.socket !== socket)
+      socketManager.removeUser(user)
+    }
+
+    removeGame(gameId: string) {
+      this.games = this.games.filter((g) => g.gameId !== gameId);
     }
 
     private addHandler(user : User) {
