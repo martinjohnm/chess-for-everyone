@@ -1,90 +1,179 @@
-import { Chess } from "chess.js";
-import WebSocket from "ws";
-import { GAME_OVER, INIT_GAME, MOVE } from "@repo/common/messages"
+import { Chess, Move, WHITE } from "chess.js";
+import { GAME_ENDED, GAME_RESULT, GAME_STATUS, INIT_GAME, MOVE } from "@repo/common/messages"
+import { randomUUID } from "crypto"
+import { socketManager, User } from "./SocketManager";
+import db from "@repo/db/client"
 
-
+const GAME_TIME_MS = 10 * 60 * 60 * 1000;
 
 
 export class Game {
-    public player1   : WebSocket;
-    public player2   : WebSocket;
-    private board     : Chess;
-    private startTime : Date;
+    public gameId : string;
+    public player1UserId : string;
+    public player2UserId : string | null;
+    public board : Chess;
     private moveCount = 0;
+    private timer : NodeJS.Timeout | null = null;
+    private moveTimer : NodeJS.Timeout | null = null;
+    public result : GAME_RESULT | null = null;
+    private player1TimeConsumed = 0;
+    private player2TimeConsumed = 0;
+    private startTime = new Date(Date.now())
+    private lastMoveTime = new Date(Date.now())
 
-    constructor(player1: WebSocket, player2: WebSocket) {
-        this.player1   = player1;
-        this.player2   = player2;
-        this.board     = new Chess();
-        this.startTime = new Date();
-        console.log("hai from game constructor");
-        
-        this.player1.send(JSON.stringify({
-            type : INIT_GAME,
-            payload : {
-                color : "white"
-            }
-        }))
-
-        this.player2.send(JSON.stringify({
-            type : INIT_GAME,
-            payload : {
-                color : "black"
-            }
-        }))
+    constructor(player1UserId : string, player2UserId : string | null, gameId? : string, startTime? : Date) {
+        this.player1UserId = player1UserId;
+        this.player2UserId = player2UserId
+        this.board = new Chess()
+        this.gameId = gameId ?? randomUUID()
+        if (startTime) {
+            this.startTime = startTime;
+            this.lastMoveTime = startTime
+        }
     }
 
-    makeMove(socket : WebSocket, move: {
-        from : string,
-        to : string
-    }) {
+    seedMoves(moves : {
+        id : string;
+        gameId : string;
+        moveNumber : string;
+        from : string;
+        to : string;
+        comments : string | null;
+        timeTaken : number | null;
+        createdAt : Date;
+    }[]) {
 
-        // validate the type of move using zod
-        if (this.moveCount % 2 === 0 && socket !== this.player1) {
-            console.log("wrong person should be made by white");            
-            return;
+        moves.forEach(move => {
+            // check for promotion
+
+            this.board.move({
+                from : move.from,
+                to : move.to
+            })
+        });
+
+        this.moveCount = moves.length;
+        if (moves[moves.length - 1]) {
+            this.lastMoveTime = moves[moves.length - 1]?.createdAt ?? new Date(Date.now())
         }
 
-        if (this.moveCount % 2 === 1 && socket !== this.player2) {
-            console.log("wrong person should be made by black");
-            return;
-        }
+        moves.map((move, index) => {
+            if (move.timeTaken) {
+                if (index %2 === 0 ) {
+                    this.player1TimeConsumed += move.timeTaken
+                } else {
+                    this.player2TimeConsumed += move.timeTaken
+                }
+            }
+        });
+
+        // reset timers here
+
+
+    }
+
+    async updateSecondPlayer(player2UserId : string) {
+        this.player2UserId = player2UserId;
+
+        const users = await db.user.findMany({
+            where : {
+                id : {
+                    in : [this.player1UserId, this.player2UserId ?? ""]
+                },
+            }
+        })
 
         try {
-            this.board.move(move)
-        } catch (e) {
-            console.log(e);
-            return 
+            this.createGameInDb();
+        } catch(e) {
+            console.error(e);
+            return;
         }
 
-        if (this.board.isGameOver()) {
-            // Send the game over message to both players
-            this.player1.send(JSON.stringify({
-                type : GAME_OVER,
+        const WhitePlayer = users.find((user) => user.id === this.player1UserId)
+        const BlackPlayer = users.find((user) => user.id === this.player2UserId)
+
+        socketManager.broadcast(
+            this.gameId,
+            JSON.stringify({
+                type : INIT_GAME,
                 payload : {
-                    winner : this.board.turn() === "w" ? "black" : "white"
-                }
-            }))
+                    gameId : this.gameId,
+                    whitePlayer : {
+                        name : WhitePlayer?.name,
+                        id : this.player1UserId,
+                        isGuest : WhitePlayer?.provider === "GUEST"
+                    },
+                    blackPlayer : {
+                        name : BlackPlayer?.name,
+                        id : this.player2UserId,
+                        isGuest : BlackPlayer?.provider === "GUEST"
+                    },
 
-            this.player2.send(JSON.stringify({
-                type : GAME_OVER,
-                payload : {
-                    winner : this.board.turn() === "w" ? "black" : "white"
+                    fen : this.board.fen(),
+                    moves : []
                 }
-            }))
-        }
-
-        if (this.moveCount % 2 === 0) {
-            this.player2.send(JSON.stringify({
-                type: MOVE,
-                payload: move
-            }))
-        } else {
-            this.player1.send(JSON.stringify({
-                type: MOVE,
-                payload: move
-            }))
-        }
-        this.moveCount++;
+            })
+        )
     }
+
+    async createGameInDb() {
+        this.startTime = new Date(Date.now())
+        this.lastMoveTime = this.startTime;
+
+        const game = await db.game.create({
+            data : {
+                id : this.gameId,
+                timeControl : "CLASSICAL",
+                status : "IN_PROGRESS",
+                startAt : this.startTime,
+                currentFen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                whitePlayer : {
+                    connect : {
+                        id : this.player1UserId
+                    }
+                },
+                blackPlayer : {
+                    connect : {
+                        id : this.player2UserId ?? ""
+                    }
+                }
+            },
+            include : {
+                whitePlayer : true,
+                blackPlayer : true
+            }
+        });
+        this.gameId = game.id
+    }
+
+    async addMoveToDb(move : Move, moveTimeStamp : Date) {
+        await db.$transaction([
+            db.move.create({
+                data : {
+                    gameId : this.gameId,
+                    moveNumber : this.moveCount + 1,
+                    from : move.from, 
+                    to : move.to,
+                    before : move.before,
+                    after : move.after,
+                    createdAt : moveTimeStamp,
+                    timeTaken : moveTimeStamp.getTime() - this.lastMoveTime.getTime(),
+                    san : move.san
+                }
+            }),
+
+            db.game.update({
+                data : {
+                    currentFen : move.after
+                },
+                where : {
+                    id : this.gameId
+                }
+            })
+        ])
+    }
+
+    
+    
 }

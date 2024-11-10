@@ -5,3 +5,10 @@ export interface MoveType  {
     to : string,
     promotion?: string;
 }
+
+export enum AuthProvider {
+    EMAIL,
+    GOOGLE,
+    GITHUB,
+    GUEST
+  }
