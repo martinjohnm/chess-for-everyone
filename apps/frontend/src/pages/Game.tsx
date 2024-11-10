@@ -13,8 +13,7 @@ export const Game = () => {
 
     const socket = useSocket()
     const user = useUser()
-    console.log(user);
-    
+
     const [chess, _ ] = useState(new Chess())
     const [board, setBoard] = useState(chess.board());
 
