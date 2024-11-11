@@ -1,3 +1,4 @@
+
 import { WebSocketServer } from "ws";
 import express from "express";
 import { configDotenv } from "dotenv";
@@ -8,6 +9,7 @@ import cors from "cors"
 import { initPassport } from "./passport";
 import passport from "passport";
 import authRoute from "./router/auth"
+
 
 const app = express();
 configDotenv()
