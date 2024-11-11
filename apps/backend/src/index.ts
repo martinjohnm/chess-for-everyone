@@ -14,6 +14,12 @@ import authRoute from "./router/auth"
 const app = express();
 configDotenv()
 
+
+
+
+
+
+
 app.use(express.json())
 app.use(cookieParser())
 app.use(
