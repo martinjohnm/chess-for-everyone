@@ -2,16 +2,18 @@ import { useUser } from "@repo/store/useUser"
 import { useSocket } from "../hooks/useSocket";
 import { useEffect, useState } from "react";
 import { Chess } from "chess.js";
-import { GAME_OVER, INIT_GAME, MOVE } from "@repo/common/messages";
+import { GAME_OVER, INIT_GAME, JOIN_ROOM, MOVE } from "@repo/common/messages";
 import { ChessBoard } from "../components/ChessBoard";
 
 import { Button } from "@repo/ui/button";
 import { ExitGame } from "../components/ExitGame";
+import { useParams } from "react-router-dom";
 
 
 export const Game = () => {
 
     const socket = useSocket()
+    const { gameId } = useParams();
     const user = useUser()
 
     const [chess, _ ] = useState(new Chess())
@@ -47,6 +49,17 @@ export const Game = () => {
                     console.log('Game over');
                     break
             }
+        }
+
+        if (gameId !== "random") {
+            socket.send(
+                JSON.stringify({
+                    type : JOIN_ROOM,
+                    payload : {
+                        gameId
+                    }
+                })
+            )
         }
     }, [socket])
 

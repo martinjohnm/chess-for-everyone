@@ -101,7 +101,7 @@ export class GameManager {
           }
         }
 
-        if (message.type === JOIN_GAME) {
+        if (message.type === JOIN_ROOM) {
           const gameId = message.payload.gameId;
           if (!gameId) {
             return;

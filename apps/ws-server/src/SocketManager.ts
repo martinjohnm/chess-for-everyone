@@ -44,6 +44,8 @@ class SocketManager {
             user
         ]);
         this.userRoomMapping.set(user.userId, roomId)
+        console.log(this.userRoomMapping);
+        
     }
     broadcast(roomId : string, message : string) {
         const users = this.interestedSockets.get(roomId)
