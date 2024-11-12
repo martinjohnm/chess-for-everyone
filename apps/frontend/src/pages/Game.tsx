@@ -7,7 +7,7 @@ import { ChessBoard } from "../components/ChessBoard";
 
 import { Button } from "@repo/ui/button";
 import { ExitGame } from "../components/ExitGame";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 export const Game = () => {
@@ -15,6 +15,7 @@ export const Game = () => {
     const socket = useSocket()
     const { gameId } = useParams();
     const user = useUser()
+    const navigate = useNavigate()
 
     const [chess, _ ] = useState(new Chess())
     const [board, setBoard] = useState(chess.board());
@@ -42,7 +43,8 @@ export const Game = () => {
                     break
                 case INIT_GAME:
                     setBoard(chess.board())
-                    console.log("Game Initialized");
+                    setStarted(true)
+                    navigate(`/game/${message.payload.gameId}`)
                     break
                 case MOVE:
                     const move = message.payload
@@ -81,16 +83,17 @@ export const Game = () => {
                         <div className="w-full justify-center flex">
                             {added ? (
                                 <div>
-
+                                    <p>share your game id:</p>
+                                    <p>{gameIDFromSocket}</p>
                                 </div>
                             ) : (
                                 
                                 gameId === "random" && (
                                 <Button className="bg-[#81b64c] p-4 mt-4 rounded-md w-2/3" onclick={() => {
-                                    socket.send(JSON.stringify({
-                                        type : INIT_GAME
+                                    socket.send(
+                                        JSON.stringify({
+                                            type : INIT_GAME
                                     }))
-                                    setStarted(true)
                                 }}>Play</Button>
                                 )
                             

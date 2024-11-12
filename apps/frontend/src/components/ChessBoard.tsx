@@ -1,51 +1,35 @@
 import { Chess, Color, PieceSymbol, Square } from "chess.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ChessSquare from "./chessboard/ChessSquare";
 import { MOVE } from "@repo/common/messages";
-
+import { useRecoilState } from "recoil";
+import { isBoardFlippedAtom, movesAtom, userSelectedMoveIndexAtom } from "@repo/store/chessBoard"
 
 export const ChessBoard = ({chess, board, socket, setBoard} : Board) => {
 
     const [from, setFrom] = useState<Square | null>(null)
+    const [isFlipped, setIsFlipped] = useRecoilState(isBoardFlippedAtom)
+    const [userSelectedMoveIndex, setUserSelectedMoveIndex] = useRecoilState(userSelectedMoveIndexAtom);
+    const [moves, setMoves] = useRecoilState(movesAtom);
+
+
+    useEffect(() => {
+
+
+    }, [])
 
     return <div className="text-black">
-        {board.map((row, i) => {
-            return <div key={i} className="flex">
-                {row.map((square, j) => {
-                    const squareRepresentaion = String.fromCharCode(97 + (j % 8)) + "" + (8-i) as Square
-                 
-                    return <div onClick={() => {
-                 
-                        if (!from) {
-                            setFrom(squareRepresentaion)
-                        } else {
-                            
-                            socket.send(JSON.stringify({
-                                type : MOVE,
-                                payload : {
-                                    move : {
-                                            from,
-                                            to : squareRepresentaion
-                                    }
-                                }
-                            }))
-
-                            setFrom(null)
-                            chess.move({
-                                from, 
-                                to : squareRepresentaion
-                            })
-                            setBoard(chess.board())
-                        }
-                    }} key={j} className={`w-12 h-12 sm-two:w-14 sm-two:h-14 sm-three:w-18 sm-three:w-18 md:w-18 md:h-18 lg:w-20 lg:h-20 ${(i+j)%2==0 ? "bg-[#ebecd0]" : "bg-[#739552]"}`}>
-                        <div className="w-full justify-center flex h-full">
-                            <div className="h-full justify-center flex flex-col">
-                                {square && <ChessSquare square={square} />}
-                            </div>
-                        </div>
+        {(isFlipped ? board.slice().reverse() : board).map((row, i) => {
+            i = isFlipped ? i + 1 : 8 - i;
+            return (<div key={i} className="flex items-center justify-center">
+                <p>{i}</p>
+                {(isFlipped ? row.slice().reverse() : row).map((square, j)=> {
+                    return <div className={`p-2 w-20 h-20 bg-red-200 items-center justify-center 
+                        flex ${(i+j) % 2 == 0 ? "bg-green-700" : "bg-slate-400"}`}>
+                        <p>{String.fromCharCode(97 + j)}</p>
                     </div>
                 })}
-            </div>
+            </div>)
         })}
     </div>
 }

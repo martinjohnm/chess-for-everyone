@@ -41,6 +41,9 @@ export class GameManager {
       user.socket.on("message", async (data) => {
         const message = JSON.parse(data.toString());
         if (message.type === INIT_GAME) {
+          // If a pendingGameId is present in this class it will map the gameId to user object 
+          // and after that the secondPlayer of the game object is updated by this users userId 
+          // (there we send INIT_GAME broadcast to all connected sockets the room)
           if (this.pendingGameId) {
             const game = this.games.find((x) => x.gameId === this.pendingGameId)
             if (!game) {
@@ -63,6 +66,10 @@ export class GameManager {
             socketManager.addUser(user, game.gameId)
             await game.updateSecondPlayer(user.userId)
             this.pendingGameId = null
+          // if no pendingGameId is present in this class that means no game without a second player 
+          // is present in the game class so we need to make a game without a second player and it 
+          // also mean that there is not a user waiting for a random player to join, so we need to make
+          // the current user object as the waiting player who is waiting for someone to join
           } else {
             const game = new Game(user.userId, null) 
             this.games.push(game)

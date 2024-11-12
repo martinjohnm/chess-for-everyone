@@ -37,7 +37,7 @@ function AuthApp () {
         <BrowserRouter >
           <Routes>
             <Route path="/" element={<Layout><Landing/></Layout>}/>
-            <Route path="/game" element={<Layout><Game/></Layout>}/>
+            <Route path="/game/:gameId" element={<Layout><Game/></Layout>}/>
             <Route path="/login" element={<Login/>}/>
             
           </Routes>
