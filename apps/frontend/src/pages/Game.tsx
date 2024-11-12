@@ -75,7 +75,15 @@ export const Game = () => {
     return (
         <div className="py-6 md:grid md:grid-cols-3 md:mx-auto md:container lg:max-w-5xl">
             <div className="md:col-span-2 w-full flex justify-center">
-                <ChessBoard chess={chess} setBoard = {setBoard} board = {board} socket={socket}/>
+                <ChessBoard 
+                    gameId={gameId ?? ""} 
+                    chess={chess} 
+                    setBoard = {setBoard} 
+                    board = {board} 
+                    socket={socket}
+                    myColor="w"
+                    started={started}
+                />
             </div>
             <div className="md:col-span-1 flex justify-center rounded-lg bg-slate-300 dark:bg-[#262522]">
                 <div className="w-full h-full flex justify-center items-center">
