@@ -223,7 +223,7 @@ export class Game {
             if (isPromoting(this.board, move.from, move.to)) {
                 this.board.move({
                     from : move.from,
-                    to : move.from,
+                    to : move.to,
                     promotion : "q"
                 })
             }
