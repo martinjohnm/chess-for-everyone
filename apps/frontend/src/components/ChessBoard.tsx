@@ -72,6 +72,9 @@ export const ChessBoard = memo(
     const [moves, setMoves] = useRecoilState(movesAtom);
     const isMyTurn = myColor === chess.turn();
 
+    console.log(moves);
+    
+
     useEffect(() => {
         if (myColor === 'b') {
           setIsFlipped(true);
@@ -79,7 +82,7 @@ export const ChessBoard = memo(
     }, [myColor]);
   
     useEffect(() => {
-        if (userSelectedMoveIndex !== null) {
+        if (userSelectedMoveIndex!== null) {
           chess.reset();
           moves.forEach((move) => {
             chess.move({ from: move.from, to: move.to });
@@ -113,6 +116,15 @@ export const ChessBoard = memo(
                                         if (!from && square?.color !== chess.turn()) return;
                                         if (!isMyTurn) {
                                             return
+                                        }
+
+                                        if (userSelectedMoveIndex !== null) {
+                                          chess.reset()
+                                          moves.forEach((move) => {
+                                            chess.move({from : move.from, to : move.to})
+                                          })
+                                          setBoard(chess.board())
+                                          setUserSelectedMoveIndex(null)
                                         }
 
                                         if (from != squareRepresentation) {

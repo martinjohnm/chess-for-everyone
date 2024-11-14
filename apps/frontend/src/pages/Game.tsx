@@ -1,15 +1,16 @@
 import { useUser } from "@repo/store/useUser"
 import { useSocket } from "../hooks/useSocket";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GAME_ADDED, GAME_OVER, INIT_GAME, JOIN_ROOM, MOVE } from "@repo/common/messages";
 import { ChessBoard, isPromoting } from "../components/ChessBoard";
 
 import { Button } from "@repo/ui/button";
 import { ExitGame } from "../components/ExitGame";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-import { movesAtom } from "@repo/store/chessBoard";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { movesAtom, userSelectedMoveIndexAtom } from "@repo/store/chessBoard";
 import { Chess } from "chess.js";
+import { MovesTable } from "../components/MovesTable";
 
 
 
@@ -38,9 +39,13 @@ export const Game = () => {
     const [added, setAdded] = useState<Boolean>(false)
     const [gameMetadata, setGameMetadata] = useState<Metadata | null>(null);
     const [gameIDFromSocket, setGameIdFromSocket] = useState<string>("")
-    
-    
+    const userSelectedMoveIndex = useRecoilValue(userSelectedMoveIndexAtom);
+    const userSelectedMoveIndexRef = useRef(userSelectedMoveIndex);
 
+    useEffect(() => {
+        userSelectedMoveIndexRef.current = userSelectedMoveIndex;
+    }, [userSelectedMoveIndex]);
+    
     useEffect(() => {
         if (!user) {
           window.location.href = '/login';
@@ -74,7 +79,11 @@ export const Game = () => {
                     break
                 case MOVE:
                     const { move } = message.payload
-                 
+                    
+                    if (userSelectedMoveIndexRef.current !== null ) {
+                        setMoves((moves) => [...moves, move])
+                    }
+                    
                     try {
                         if (isPromoting(chess, move.from, move.to)) {
                             chess.move({
@@ -152,8 +161,9 @@ export const Game = () => {
                             
                         </div>
                     ) : (
-                        <div className="w-full justify-center flex">
-                            <ExitGame/>
+                        <div className="w-full items-center justify-center">
+                            
+                            <MovesTable/>
                         </div>
                     )}
                     
