@@ -226,12 +226,14 @@ export class Game {
                     to : move.to,
                     promotion : "q"
                 })
+            } else {
+                this.board.move({
+                    from : move.from,
+                    to : move.to
+                })
             }
             
-            this.board.move({
-                from : move.from,
-                to : move.to
-            })
+            
         } catch(e) {
             console.error("Error while making move", e);
             return;
