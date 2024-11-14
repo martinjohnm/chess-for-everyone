@@ -32,12 +32,12 @@ function AuthApp () {
 
     
  
-      <div className="dark:bg-[#302e2b] bg-slate-100">
+      <div className="dark:bg-[#302e2b] bg-slate-50">
 
         <BrowserRouter >
           <Routes>
             <Route path="/" element={<Layout><Landing/></Layout>}/>
-            <Route path="/game" element={<Layout><Game/></Layout>}/>
+            <Route path="/game/:gameId" element={<Layout><Game/></Layout>}/>
             <Route path="/login" element={<Login/>}/>
             
           </Routes>

@@ -26,7 +26,7 @@ export default function Landing() {
                 </div>
                 <div className="items-center justify-center flex">
                   <Button className="bg-[#81b64c] p-4 rounded-md w-full" onclick={() => {
-                    navigate("/game")
+                    navigate("/game/random")
                   }}><p className="font-bold text-3xl shadow-sm">Play Online</p></Button>
                 </div>
               </div>

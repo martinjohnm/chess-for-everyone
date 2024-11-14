@@ -1,11 +1,35 @@
-import { BLACK, Chess, Move, WHITE } from "chess.js";
+import { BLACK, Chess, Move, Square, WHITE } from "chess.js";
 import { GAME_ENDED, GAME_RESULT, GAME_STATUS, INIT_GAME, MOVE } from "@repo/common/messages"
-import { randomUUID } from "crypto"
+import { checkPrime, randomUUID } from "crypto"
 import { socketManager, User } from "./SocketManager";
 import db from "@repo/db/client"
 
 const GAME_TIME_MS = 10 * 60 * 60 * 1000;
 
+export function isPromoting(chess: Chess, from: Square, to: Square) {
+    if (!from) {
+      return false;
+    }
+  
+    const piece = chess.get(from);
+  
+    if (piece?.type !== 'p') {
+      return false;
+    }
+  
+    if (piece.color !== chess.turn()) {
+      return false;
+    }
+  
+    if (!['1', '8'].some((it) => to.endsWith(it))) {
+      return false;
+    }
+  
+    return chess
+      .moves({ square: from, verbose: true })
+      .map((it) => it.to)
+      .includes(to);
+  }
 
 export class Game {
     public gameId : string;
@@ -194,14 +218,24 @@ export class Game {
         const moveTimeStamp = new Date(Date.now())
 
         try {
-            // check for promotion
+            
 
-            this.board.move({
-                from : move.from,
-                to : move.to
-            })
+            if (isPromoting(this.board, move.from, move.to)) {
+                this.board.move({
+                    from : move.from,
+                    to : move.to,
+                    promotion : "q"
+                })
+            } else {
+                this.board.move({
+                    from : move.from,
+                    to : move.to
+                })
+            }
+            
+            
         } catch(e) {
-            console.error("Error while making move");
+            console.error("Error while making move", e);
             return;
         }
 
