@@ -5,7 +5,6 @@ import { GAME_ADDED, GAME_OVER, INIT_GAME, JOIN_ROOM, MOVE } from "@repo/common/
 import { ChessBoard, isPromoting } from "../components/ChessBoard";
 
 import { Button } from "@repo/ui/button";
-import { ExitGame } from "../components/ExitGame";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { movesAtom, userSelectedMoveIndexAtom } from "@repo/store/chessBoard";
