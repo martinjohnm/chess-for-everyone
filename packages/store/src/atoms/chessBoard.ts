@@ -1,7 +1,23 @@
 
-import { Move } from "chess.js"
+import { Chess, Move } from "chess.js"
 import { atom } from "recoil"
 
+export const chessAtom = atom<Chess>({
+    key : "chessAtom",
+    default : new Chess()
+})
+
+
+
+export const isMyTurnAtom = atom<Boolean>({
+    key : "isMyTurnAtom",
+    default : false
+})
+
+export const chessBoardAtom = atom<any>({
+    key : "chessBoardAtom",
+    default : null
+})
 
 export const isBoardFlippedAtom = atom<Boolean>({
     key : "isBoardFlippedAtom",

@@ -40,6 +40,7 @@ export class GameManager {
     private addHandler(user : User) {
       user.socket.on("message", async (data) => {
         const message = JSON.parse(data.toString());
+
         if (message.type === INIT_GAME) {
           // If a pendingGameId is present in this class it will map the gameId to user object 
           // and after that the secondPlayer of the game object is updated by this users userId 
