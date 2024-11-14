@@ -23,8 +23,8 @@ export class User {
 
 class SocketManager {
     private static instance : SocketManager;
-    private interestedSockets : Map<string, User[]>;
-    private userRoomMapping : Map<string, string>;
+    private interestedSockets : Map<string, User[]>; // Maping socket Id with corresponding user object
+    private userRoomMapping : Map<string, string>;   // Maping gameId with corresponding userId, userId => gameId
 
     private constructor() {
         this.interestedSockets = new Map<string, User[]>();
@@ -44,8 +44,7 @@ class SocketManager {
             user
         ]);
         this.userRoomMapping.set(user.userId, roomId)
-        console.log(this.userRoomMapping);
-        
+
     }
     broadcast(roomId : string, message : string) {
         const users = this.interestedSockets.get(roomId)

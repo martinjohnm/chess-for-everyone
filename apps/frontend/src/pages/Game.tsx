@@ -1,14 +1,14 @@
 import { useUser } from "@repo/store/useUser"
 import { useSocket } from "../hooks/useSocket";
 import { useEffect, useRef, useState } from "react";
-import { GAME_ADDED, GAME_OVER, INIT_GAME, JOIN_ROOM, MOVE } from "@repo/common/messages";
+import { GAME_ADDED, GAME_JOINED, GAME_OVER, INIT_GAME, JOIN_ROOM, MOVE } from "@repo/common/messages";
 import { ChessBoard, isPromoting } from "../components/ChessBoard";
 
 import { Button } from "@repo/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { movesAtom, userSelectedMoveIndexAtom } from "@repo/store/chessBoard";
-import { Chess } from "chess.js";
+import { Chess, Move } from "chess.js";
 import { MovesTable } from "../components/MovesTable";
 
 
@@ -59,6 +59,8 @@ export const Game = () => {
         }
         socket.onmessage = (event) => {
             const message = JSON.parse(event.data);
+            console.log("message" ,message);
+            
             switch (message.type) {
                 case GAME_ADDED: 
                     setAdded(true)
@@ -101,6 +103,23 @@ export const Game = () => {
                         break
                     }
                     break
+                case GAME_JOINED:
+                    setGameMetadata({
+                        blackPlayer: message.payload.blackPlayer,
+                        whitePlayer: message.payload.whitePlayer,
+                    })
+
+                    setStarted(true);
+
+                    message.payload.moves.map((x: Move) => {
+                        if (isPromoting(chess, x.from, x.to)) {
+                        chess.move({ ...x, promotion: 'q' });
+                        } else {
+                        chess.move(x);
+                        }
+                    });
+                    setMoves(message.payload.moves);
+                    break;
                 case GAME_OVER:
                     console.log('Game over');
                     break
