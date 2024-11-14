@@ -122,8 +122,8 @@ export const Game = () => {
     if (!socket) return <div>Connecting...</div>
     
     return (
-        <div className="py-6 md:grid md:grid-cols-3 md:mx-auto md:container lg:max-w-5xl">
-            <div className="md:col-span-2 w-full flex justify-center">
+        <div className="py-6 md:grid md:grid-cols-3 md:mx-auto md:container lg:grid-cols-6 lg:w-full">
+            <div className="md:col-span-2 lg:col-span-4 w-full flex justify-center">
                 <ChessBoard 
                     gameId={gameId ?? ""} 
                     chess={chess} 
@@ -136,10 +136,10 @@ export const Game = () => {
                     started={started}
                 />
             </div>
-            <div className="md:col-span-1 flex justify-center rounded-lg bg-slate-300 dark:bg-[#262522]">
-                <div className="w-full h-full flex justify-center items-center">
+            <div className="md:col-span-1 lg:col-span-2 flex justify-center rounded-lg bg-slate-300 dark:bg-[#262522]">
+                <div className="w-full h-full">
                     {!started ? (
-                        <div className="w-full justify-center flex">
+                        <div className="w-full justify-center items-center flex">
                             {added ? (
                                 <div>
                                     <p>share your game id:</p>
@@ -160,7 +160,7 @@ export const Game = () => {
                             
                         </div>
                     ) : (
-                        <div className="w-full items-center justify-center">
+                        <div className="w-full items-center justify-center p-2">
                             
                             <MovesTable/>
                         </div>
