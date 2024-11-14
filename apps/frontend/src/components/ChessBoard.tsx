@@ -3,7 +3,6 @@ import { memo, useEffect, useState } from "react";
 import ChessSquare from "./chessboard/ChessSquare";
 import { useRecoilState } from "recoil";
 import { isBoardFlippedAtom, movesAtom, userSelectedMoveIndexAtom } from "@repo/store/chessBoard"
-import NumberNotation from "./chessboard/NumberNotation";
 import { MOVE } from "@repo/common/messages";
 
 
@@ -72,6 +71,9 @@ export const ChessBoard = memo(
     const [moves, setMoves] = useRecoilState(movesAtom);
     const isMyTurn = myColor === chess.turn();
 
+    console.log(moves);
+    
+
     useEffect(() => {
         if (myColor === 'b') {
           setIsFlipped(true);
@@ -79,7 +81,7 @@ export const ChessBoard = memo(
     }, [myColor]);
   
     useEffect(() => {
-        if (userSelectedMoveIndex !== null) {
+        if (userSelectedMoveIndex!== null) {
           chess.reset();
           moves.forEach((move) => {
             chess.move({ from: move.from, to: move.to });
@@ -96,15 +98,14 @@ export const ChessBoard = memo(
         {(isFlipped ? board.slice().reverse() : board).map((row, i) => {
             i = isFlipped ? i + 1 : 8 - i;
             return (<div key={i} className="flex">
-                <NumberNotation isMainBoxColor={isFlipped ? i % 2 !== 0 : i % 2 === 0} label={i.toString()} />
                 {(isFlipped ? row.slice().reverse() : row).map((square, j)=> {
                     
                     j = isFlipped ? 7 - (j%8) : j % 8
 
                     const squareRepresentation = (String.fromCharCode(97 + j) + '' + i) as Square;
                     
-                    return <div key={j} className={`w-12 h-12 sm-two:w-14 sm-two:h-14 sm-three:w-18 sm-three:w-18 md:w-18 md:h-18 lg:w-20 lg:h-20 ${(i+j)%2==0 ? "bg-[#ebecd0]" : "bg-[#739552]"}`}>
-                            <div className="w-full justify-center flex h-full items-center flex-col"
+                    return <div key={j} className={`w-14 h-14 sm-two:w-14 sm-two:h-14 sm-three:w-18 sm-three:w-18 md:w-18 md:h-18 lg:w-24 lg:h-24 ${(i+j)%2==0 ? "bg-[#ebecd0]" : "bg-[#739552]"}`}>
+                            <div className="w-full justify-center flex h-full items-center flex-col relative"
                                     onClick={() => {
                                         
                                         if (!started) {
@@ -113,6 +114,15 @@ export const ChessBoard = memo(
                                         if (!from && square?.color !== chess.turn()) return;
                                         if (!isMyTurn) {
                                             return
+                                        }
+
+                                        if (userSelectedMoveIndex !== null) {
+                                          chess.reset()
+                                          moves.forEach((move) => {
+                                            chess.move({from : move.from, to : move.to})
+                                          })
+                                          setBoard(chess.board())
+                                          setUserSelectedMoveIndex(null)
                                         }
 
                                         if (from != squareRepresentation) {
@@ -163,6 +173,11 @@ export const ChessBoard = memo(
                                         
                                     }}  >
                                 {square && <ChessSquare square={square} />}     
+                                {j === 0 && !isFlipped && <p className={`absolute ${!isFlipped ? "top-0 left-0" : " right-0 top-0"} p-1 text-sm font-bold font-sans ${(i+j)%2!=0 ? "text-[#ebecd0]" : "text-[#739552]"}`}>{i}</p>}
+                                {i === 1 && !isFlipped && <p className={`absolute ${!isFlipped ? "bottom-0 right-0" : " left-0 top-0"} p-1 text-sm font-bold font-sans ${(i+j)%2!=0 ? "text-[#ebecd0]" : "text-[#739552]"}`}>{String.fromCharCode(97 + j)}</p>}
+
+                                {j === 7 && isFlipped && <p className={`absolute ${isFlipped ? "top-0 left-0" : " right-0 top-0"} p-1 text-sm font-bold font-sans ${(i+j)%2!=0 ? "text-[#ebecd0]" : "text-[#739552]"}`}>{i}</p>}
+                                {i === 8 && isFlipped && <p className={`absolute ${isFlipped ? "bottom-0 right-0" : " left-0 top-0"} p-1 text-sm font-bold font-sans ${(i+j)%2!=0 ? "text-[#ebecd0]" : "text-[#739552]"}`}>{String.fromCharCode(97 + j)}</p>}
                         </div>
                     </div>
                 })}

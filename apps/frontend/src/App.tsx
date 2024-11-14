@@ -32,7 +32,7 @@ function AuthApp () {
 
     
  
-      <div className="dark:bg-[#302e2b] bg-slate-50">
+      <div className="dark:bg-[#302e2b] bg-slate-50 h-screen">
 
         <BrowserRouter >
           <Routes>
