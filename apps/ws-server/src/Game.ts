@@ -68,12 +68,18 @@ export class Game {
     }[]) {
 
         moves.forEach(move => {
-            // check for promotion
-
-            this.board.move({
-                from : move.from,
-                to : move.to
-            })
+            if (isPromoting(this.board, move.from as Square, move.to as Square)) {
+                this.board.move({
+                    from: move.from,
+                    to: move.to,
+                    promotion: 'q',
+                });
+            } else {
+                this.board.move({
+                    from: move.from,
+                    to: move.to,
+            });
+            }
         });
 
         this.moveCount = moves.length;
