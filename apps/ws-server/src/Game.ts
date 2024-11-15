@@ -120,9 +120,10 @@ export class Game {
             return;
         }
 
-        const WhitePlayer = users.find((user) => user.id === this.player1UserId)
-        const BlackPlayer = users.find((user) => user.id === this.player2UserId)
+        const WhitePlayer = users.find(user => user.id === this.player1UserId)
+        const BlackPlayer = users.find(user => user.id === this.player2UserId)
 
+        
         socketManager.broadcast(
             this.gameId,
             JSON.stringify({
