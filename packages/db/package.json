@@ -9,6 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "db:dev": "npx prisma migrate dev && npx prisma generate",
     "db:seed": "prisma db seed"
+    
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
