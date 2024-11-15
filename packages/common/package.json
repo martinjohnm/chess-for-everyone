@@ -8,9 +8,7 @@
     "./types" : "./src/types.ts"
   },
   "scripts": {
-    "build": "tsc",
-    "clean": "rm -rf dist",
-    "dev": "tsc --watch"
+    "clean": "rm -rf dist"
   },
   "keywords": [],
   "author": "",
