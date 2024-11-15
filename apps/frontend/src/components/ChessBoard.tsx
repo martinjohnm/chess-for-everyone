@@ -104,7 +104,7 @@ export const ChessBoard = memo(
 
                     const squareRepresentation = (String.fromCharCode(97 + j) + '' + i) as Square;
                     
-                    return <div key={j} className={`w-14 h-14 sm-two:w-14 sm-two:h-14 sm-three:w-18 sm-three:w-18 md:w-18 md:h-18 lg:w-24 lg:h-24 ${(i+j)%2==0 ? "bg-[#ebecd0]" : "bg-[#739552]"}`}>
+                    return <div key={j} className={`w-14 h-14 sm-two:w-14 sm-two:h-14 sm-three:w-18 sm-three:w-18 lg:w-20 lg:h-20 lg-two:w-22 lg-two:h-22 lg-three:w-24 lg-three:h-24 ${(i+j)%2==0 ? "bg-[#ebecd0]" : "bg-[#739552]"}`}>
                             <div className="w-full justify-center flex h-full items-center flex-col relative"
                                     onClick={() => {
                                         

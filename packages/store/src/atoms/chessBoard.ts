@@ -2,6 +2,7 @@
 import { Chess, Move } from "chess.js"
 import { atom } from "recoil"
 
+
 export const chessAtom = atom<Chess>({
     key : "chessAtom",
     default : new Chess()
@@ -33,3 +34,4 @@ export const userSelectedMoveIndexAtom = atom<number | null>({
     key : "userSelectedMoveIndex",
     default : null
 })
+

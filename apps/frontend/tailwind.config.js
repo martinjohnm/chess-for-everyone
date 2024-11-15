@@ -9,7 +9,9 @@ export default {
     extend: {
       screens: {
         'sm-two': '660px',
-        "sm-three": "700px"
+        "sm-three": "700px",
+        "lg-two" : "1135px",
+        "lg-three"  : "1360px"
         // => @media (min-width: 640px) { ... }
       },
     },

@@ -15,7 +15,7 @@ export const MovesTable = () => {
     return <div>
         {   
             moves.map((move,index) => (
-                <div className={`justify-start px-2 py-1 gap-3 text-white grid grid-cols-8 ${index % 2 === 0 ? "bg-[#2b2927]" : "bg-[#262522]"}`}>
+                <div key={index} className={`justify-start px-2 py-1 gap-3 text-white grid grid-cols-8 ${index % 2 === 0 ? "bg-[#2b2927]" : "bg-[#262522]"}`}>
                     <div className="justify-center items-center col-span-1 text-sm text-[#c3c2c2]">
                         <p className="">{index + 1}.</p>
                     </div>

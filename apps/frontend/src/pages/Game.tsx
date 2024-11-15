@@ -1,7 +1,7 @@
 import { useUser } from "@repo/store/useUser"
 import { useSocket } from "../hooks/useSocket";
 import { useEffect, useRef, useState } from "react";
-import { GAME_ADDED, GAME_JOINED, GAME_OVER, INIT_GAME, JOIN_ROOM, MOVE } from "@repo/common/messages";
+import { EXIT_GAME, GAME_ADDED, GAME_ENDED, GAME_JOINED, GAME_OVER, INIT_GAME, JOIN_ROOM, MOVE } from "@repo/common/messages";
 import { ChessBoard, isPromoting } from "../components/ChessBoard";
 
 import { Button } from "@repo/ui/button";
@@ -10,8 +10,15 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { movesAtom, userSelectedMoveIndexAtom } from "@repo/store/chessBoard";
 import { Chess, Move } from "chess.js";
 import { MovesTable } from "../components/MovesTable";
+import { Result } from "@repo/common/types";
+import { ExitDialogBox } from "../components/ExitDialogBox";
+import GameEndModal from "../components/GameEndModal";
 
 
+export interface GameResult {
+    result: Result;
+    by: string;
+  }
 
 export interface Player {
     id: string;
@@ -36,10 +43,13 @@ export const Game = () => {
     const setMoves = useSetRecoilState(movesAtom);
     const [started, setStarted] = useState<Boolean>(false)
     const [added, setAdded] = useState<Boolean>(false)
+    const [result, setResult] = useState<GameResult | null>(null);
     const [gameMetadata, setGameMetadata] = useState<Metadata | null>(null);
     const [gameIDFromSocket, setGameIdFromSocket] = useState<string>("")
     const userSelectedMoveIndex = useRecoilValue(userSelectedMoveIndexAtom);
     const userSelectedMoveIndexRef = useRef(userSelectedMoveIndex);
+
+    const [isDialogOpen, setDialogOpen] = useState(false);
 
     useEffect(() => {
         userSelectedMoveIndexRef.current = userSelectedMoveIndex;
@@ -121,8 +131,35 @@ export const Game = () => {
                     setMoves(message.payload.moves);
                     break;
                 case GAME_OVER:
-                    console.log('Game over');
-                    break
+                    setResult(message.payload.result);
+                    chess.reset()
+                    setMoves([])
+                    break;
+            
+                case GAME_ENDED:
+                    console.log("game ended");
+                    
+                    let wonBy
+                    switch (message.payload.status) {
+                        case "COMPLETED" : 
+                            wonBy = message.payload.result !== "DRAW" ? "ChekcMate" : "Draw";
+                            break;
+                        case "PLAYER_EXIT":
+                            wonBy = "Player Exit";
+                            break;
+                        default:
+                            wonBy = "Timeout"
+                    }
+                    setResult({
+                        result : message.payload.result,
+                        by : wonBy
+                    })
+                    chess.reset()
+                    setMoves([])
+                    setStarted(false)
+                    setAdded(false)
+
+
             }
         }
 
@@ -138,10 +175,41 @@ export const Game = () => {
         }
     }, [chess,socket])
 
+
+    const handleExit = () => {
+        socket?.send(
+        JSON.stringify({
+            type: EXIT_GAME,
+            payload: {
+            gameId,
+            },
+        }),
+        );
+        setMoves([]);
+        navigate('/');
+    };
+
     if (!socket) return <div>Connecting...</div>
     
-    return (
+    return (<div>
+
+        {result && (
+            <GameEndModal
+            blackPlayer={gameMetadata?.blackPlayer}
+            whitePlayer={gameMetadata?.whitePlayer}
+            gameResult={result}
+            ></GameEndModal>
+        )}    
+        {started && (
+            <div className="justify-center flex pt-4 text-white">
+            {(user.id === gameMetadata?.blackPlayer?.id ? 'b' : 'w') ===
+            chess.turn()
+                ? 'Your turn'
+                : "Opponent's turn"}
+            </div>
+        )}
         <div className="py-6 md:grid md:grid-cols-3 md:mx-auto md:container lg:grid-cols-6 lg:w-full">
+            
             <div className="md:col-span-2 lg:col-span-4 w-full flex justify-center">
                 <ChessBoard 
                     gameId={gameId ?? ""} 
@@ -158,6 +226,7 @@ export const Game = () => {
             <div className="md:col-span-1 lg:col-span-2 flex justify-center rounded-lg bg-slate-300 dark:bg-[#262522]">
                 <div className="w-full h-full">
                     {!started ? (
+                        
                         <div className="w-full justify-center items-center flex">
                             {added ? (
                                 <div>
@@ -178,15 +247,28 @@ export const Game = () => {
                             )}
                             
                         </div>
-                    ) : (
+                        ) : (
                         <div className="w-full items-center justify-center p-2">
-                            
-                            <MovesTable/>
+                            <div className="w-full items-center justify-center flex mt-6">
+                                <Button
+                                    onclick={() => setDialogOpen(true)}
+                                    className="px-4 py-4 bg-red-500 text-white rounded hover:bg-red-700 flex w-1/2 items-center justify-center"
+                                >
+                                    Exit Game
+                                </Button>
+                            </div>
+                            <ExitDialogBox title="Exit Game" message="Are you sure ? this action cannot be undone !" isOpen={isDialogOpen} onClose={() => setDialogOpen(false)} onSubmit={handleExit}/>
                         </div>
                     )}
+
+                    <div className="w-full items-center justify-center overflow-auto">
+                        
+                        <MovesTable/>
+                    </div>
                     
                 </div>
             </div>
+        </div>
         </div>
     )
 

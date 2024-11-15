@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "@types/dotenv": "^8.2.3",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "@repo/common": "*"
+
   },
   "exports": {
     "./useUser": "./src/hooks/useUser.ts",
