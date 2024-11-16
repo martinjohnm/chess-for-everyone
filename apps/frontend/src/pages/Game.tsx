@@ -13,6 +13,7 @@ import { MovesTable } from "../components/MovesTable";
 import { Result } from "@repo/common/types";
 import { ExitDialogBox } from "../components/ExitDialogBox";
 import GameEndModal from "../components/GameEndModal";
+import { ShareGame } from "../components/ShareGame";
 
 
 export interface GameResult {
@@ -106,7 +107,7 @@ export const Game = () => {
                             chess.move({ from: move.from, to: move.to });
                         
                         }
-                       
+                        
                         console.log("move made");
                         setMoves((moves) => [...moves, move])
                     } catch(e) {
@@ -191,7 +192,7 @@ export const Game = () => {
 
     if (!socket) return <div>Connecting...</div>
     
-    return (<div>
+    return (<div className="bg-[#302e2b]">
 
         {result && (
             <GameEndModal
@@ -223,16 +224,13 @@ export const Game = () => {
                     started={started}
                 />
             </div>
-            <div className="md:col-span-1 lg:col-span-2 flex justify-center rounded-lg bg-slate-300 dark:bg-[#262522]">
+            <div className="md:col-span-1 lg:col-span-2 flex justify-center rounded-lg bg-[#262522]">
                 <div className="w-full h-full">
                     {!started ? (
                         
-                        <div className="w-full justify-center items-center flex">
+                        <div className="w-full justify-center items-center flex p-4">
                             {added ? (
-                                <div>
-                                    <p>share your game id:</p>
-                                    <p>{gameIDFromSocket}</p>
-                                </div>
+                                <ShareGame gameId={gameIDFromSocket}/>
                             ) : (
                                 
                                 gameId === "random" && (
@@ -261,7 +259,7 @@ export const Game = () => {
                         </div>
                     )}
 
-                    <div className="w-full items-center justify-center overflow-auto">
+                    <div className="w-full items-center justify-center overflow-auto h-[600px] container mx-auto p-10 md:h-[350px]">
                         
                         <MovesTable/>
                     </div>

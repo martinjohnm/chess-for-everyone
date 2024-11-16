@@ -9,6 +9,8 @@ import cors from "cors"
 import { initPassport } from "./passport";
 import passport from "passport";
 import authRoute from "./router/auth"
+import gameRoute from "./router/games"
+
 
 
 const app = express();
@@ -49,6 +51,7 @@ app.use(
 
 
 app.use('/auth', authRoute);
+app.use('/games', gameRoute)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
