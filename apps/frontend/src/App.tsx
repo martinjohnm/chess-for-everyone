@@ -10,6 +10,7 @@ import { Suspense } from "react"
 import { Loader } from "./components/Loader"
 import Landing from "./pages/Landing"
 import { Layout } from "./components/Layout"
+import { PlayedGames } from "./pages/PlayedGames"
 
 
 
@@ -32,16 +33,20 @@ function AuthApp () {
 
     
  
-      <div className="dark:bg-[#302e2b] bg-slate-50 h-screen">
-
+      <div className="bg-[#302e2b] h-screen">
+        <Layout>
         <BrowserRouter >
           <Routes>
-            <Route path="/" element={<Layout><Landing/></Layout>}/>
-            <Route path="/game/:gameId" element={<Layout><Game/></Layout>}/>
-            <Route path="/login" element={<Login/>}/>
             
+              <Route path="/" element={<Landing/>}/>
+              <Route path="/game/:gameId" element={<Game/>}/>
+              <Route path="/games" element={<PlayedGames/>}/>
+              <Route path="/login" element={<Login/>}/>
+
+        
           </Routes>
         </BrowserRouter>
+        </Layout>
       </div>
   )
 }

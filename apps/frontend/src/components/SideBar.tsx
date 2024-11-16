@@ -1,13 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
-import { FaChessKnight } from 'react-icons/fa';
+import { FaChessKnight, FaGamepad } from 'react-icons/fa';
 import { FiHome } from 'react-icons/fi';
-import ThemeToggleButton from './ThemeToggleButton';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { windowSizeAtom, windowSizeLessThan960 } from '@repo/store/window.ts';
-
-const Sidebar: React.FC = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+const Sidebar  = () => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
 
   const windowisGreater960 = useRecoilValue(windowSizeLessThan960)
@@ -38,7 +36,7 @@ const Sidebar: React.FC = () => {
     return (
             
 
-      <nav className="bg-white border-gray-200 dark:bg-gray-900">
+      <nav className="bg-gray-900">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
               <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Chess</span>
           <button data-collapse-toggle="navbar-default" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
@@ -63,21 +61,19 @@ const Sidebar: React.FC = () => {
 
   
   return (
-    <div className={`flex ${isCollapsed ? 'w-14' : 'w-50'} sticky top-0 p-4 transition-width duration-300 bg-slate-300 h-screen text-black dark:text-white dark:bg-[#262522]`}>
+    <div className={`flex ${isCollapsed ? 'w-14' : 'w-50'} sticky top-0 p-4 transition-width duration-300 h-screen text-white bg-[#262522]`}>
       <div className="flex flex-col justify-between h-full">
         {/* Sidebar Header */}
         <div>
           <button onClick={toggleSidebar} className="text-xl mb-4">
             <FaChessKnight />
-            
           </button>
 
           {/* Navigation Links */}
           <nav>
             <SidebarLink icon={<FiHome />} label="Home" isCollapsed={isCollapsed} />
-            {/* <SidebarLink icon={<FiUser />} label="Profile" isCollapsed={isCollapsed} />
-            <SidebarLink icon={<FiSettings />} label="Settings" isCollapsed={isCollapsed} /> */}
-            <ThemeToggleButton />
+            <SidebarLink icon={<FaGamepad />} label="Games" isCollapsed={isCollapsed} />  
+            
           </nav>
         </div>
       </div>
@@ -91,10 +87,9 @@ interface SidebarLinkProps {
   isCollapsed: boolean;
 }
 
-const SidebarLink: React.FC<SidebarLinkProps> = ({ icon, label, isCollapsed}) => {
-
+const SidebarLink = ({ icon, label, isCollapsed} : SidebarLinkProps) => {
   return (
-    <div className="flex items-center space-x-4 mb-4 text-black dark:text-white hover:text-white">
+    <div className="flex items-center space-x-4 mb-4 text-slate-100 cursor-pointer hover:text-blue-300" >
       <span className="text-xl">{icon}</span>
       {!isCollapsed && <span className="text-base">{label}</span>}
     </div>
