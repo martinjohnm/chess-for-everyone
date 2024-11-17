@@ -35,19 +35,18 @@ function AuthApp () {
     
  
       <div className="bg-[#302e2b] min-h-screen">
-        <Layout>
         <BrowserRouter >
           <Routes>
             
-              <Route path="/" element={<Landing/>}/>
-              <Route path="/game/:gameId" element={<Protected><Game/></Protected>}/>
-              <Route path="/games" element={ <Protected><PlayedGames/></Protected>}/>
+              <Route path="/" element={<Layout><Landing/></Layout>}/>
+              <Route path="/game/:gameId" element={<Protected><Layout><Game/></Layout></Protected>}/>
+              <Route path="/games" element={ <Protected><Layout><PlayedGames/></Layout></Protected>}/>
               <Route path="/login" element={<Login/>}/>
 
         
           </Routes>
         </BrowserRouter>
-        </Layout>
+      
       </div>
   )
 }

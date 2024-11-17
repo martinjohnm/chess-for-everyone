@@ -107,7 +107,7 @@ export const PlayedGames = () => {
                 </div>
                 <div className="items-center justify-start flex">
                     {game.status === "IN_PROGRESS" ? <Button onclick={() => {
-                        naavi(`game/${game.id}`)
+                        naavi(`/game/${game.id}`)
                     }} className="p-2 bg-green-500 rounded-md text-zinc-50 hover:bg-green-700 w-36">Continue</Button> : <Button className="p-2 bg-red-500 rounded-md text-zinc-50 hover:bg-green-700 w-36">See game</Button>}
                 </div>
             </div>

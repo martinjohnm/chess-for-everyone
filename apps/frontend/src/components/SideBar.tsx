@@ -4,13 +4,15 @@ import { FaChessKnight, FaGamepad } from 'react-icons/fa';
 import { FiHome } from 'react-icons/fi';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { windowSizeAtom, windowSizeLessThan960 } from '@repo/store/window.ts';
+import { useNavigate } from 'react-router-dom';
 const Sidebar  = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
 
   const windowisGreater960 = useRecoilValue(windowSizeLessThan960)
   const [windowSize, setWindowSize] = useRecoilState(windowSizeAtom)
-  
+  const navigate = useNavigate()
+
   useEffect(() => {
     const handleResize = () => {
         setWindowSize({
@@ -71,8 +73,16 @@ const Sidebar  = () => {
 
           {/* Navigation Links */}
           <nav>
-            <SidebarLink icon={<FiHome />} label="Home" isCollapsed={isCollapsed} />
-            <SidebarLink icon={<FaGamepad />} label="Games" isCollapsed={isCollapsed} />  
+            <div onClick={() => {
+              navigate("/")
+            }}>
+              <SidebarLink icon={<FiHome />} label="Home" isCollapsed={isCollapsed} />
+            </div>
+            <div onClick={() => {
+              navigate("games")
+            }}>
+              <SidebarLink icon={<FaGamepad />} label="Games" isCollapsed={isCollapsed} /> 
+            </div> 
             
           </nav>
         </div>
