@@ -11,6 +11,7 @@ import { Loader } from "./components/Loader"
 import Landing from "./pages/Landing"
 import { Layout } from "./components/Layout"
 import { PlayedGames } from "./pages/PlayedGames"
+import { Protected } from "./pages/Protected"
 
 
 
@@ -33,14 +34,14 @@ function AuthApp () {
 
     
  
-      <div className="bg-[#302e2b] h-screen">
+      <div className="bg-[#302e2b] min-h-screen">
         <Layout>
         <BrowserRouter >
           <Routes>
             
               <Route path="/" element={<Landing/>}/>
-              <Route path="/game/:gameId" element={<Game/>}/>
-              <Route path="/games" element={<PlayedGames/>}/>
+              <Route path="/game/:gameId" element={<Protected><Game/></Protected>}/>
+              <Route path="/games" element={ <Protected><PlayedGames/></Protected>}/>
               <Route path="/login" element={<Login/>}/>
 
         

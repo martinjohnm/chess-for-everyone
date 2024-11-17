@@ -35,8 +35,7 @@ router.get('/refresh', async (req: Request, res: Response) => {
       });
   
       const token = jwt.sign({ userId: user.id, name: userDb?.name }, JWT_SECRET);
-      console.log(token);
-      
+
       res.json({
         token ,
         id: user.id,
