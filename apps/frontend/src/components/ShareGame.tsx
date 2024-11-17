@@ -1,7 +1,7 @@
 import { Button } from "@repo/ui/button";
 import { useState } from "react"
 
-export const ShareGame = ({className,gameId}:{className?:string,gameId:string}) => {
+export const ShareGame = ({gameId}:{gameId:string}) => {
 
     const url = window.origin+"/game/"+gameId;
     const [copied,setCopied] = useState(false);
@@ -12,7 +12,7 @@ export const ShareGame = ({className,gameId}:{className?:string,gameId:string}) 
     }
 
     return (
-        <div className={`flex flex-col items-center gap-y-4 ${className}`}>
+        <div className={`flex flex-col items-center gap-y-4`}>
 
             <h3 className="scroll-m-20 text-4xl font-semibold tracking-tight text-green-500">
                 Play with Friends

@@ -146,6 +146,7 @@ export class Game {
                 }
             })
         )
+        
     }
 
     async createGameInDb() {
@@ -321,6 +322,8 @@ export class Game {
                 whitePlayer : true
             }
         })
+
+        
 
         socketManager.broadcast(
             this.gameId,

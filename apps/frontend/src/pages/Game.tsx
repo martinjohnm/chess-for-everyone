@@ -36,7 +36,7 @@ export const Game = () => {
 
     const socket = useSocket()
     const { gameId } = useParams();
-    const user = useUser()
+ 
     const navigate = useNavigate()    
     
     const [chess, _setChess ] = useState<Chess>(new Chess())
@@ -55,15 +55,7 @@ export const Game = () => {
     useEffect(() => {
         userSelectedMoveIndexRef.current = userSelectedMoveIndex;
     }, [userSelectedMoveIndex]);
-    
-    useEffect(() => {
-        if (!user) {
-          window.location.href = '/login';
-        }
-
-
-      }, [user]);
-
+    const user = useUser()
     useEffect(() => {
         if (!socket) {
             return;
@@ -235,6 +227,7 @@ export const Game = () => {
                                 
                                 gameId === "random" && (
                                 <Button className="bg-[#81b64c] p-4 mt-4 rounded-md w-2/3" onclick={() => {
+        
                                     socket.send(
                                         JSON.stringify({
                                             type : INIT_GAME

@@ -26,21 +26,54 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 router.get('/get', async (req: Request, res: Response) => {
     if (req.user) {
         const user = req.user as UserDetails;
-        const games = await db.game.findMany({
-            where : {
-                OR : [
-                    {
-                        blackPlayerId : user.id
-                    }, 
-                    {
-                        whitePlayerId : user.id
-                    }
-                ]
-            }
-        })
-    
-    
+        let games : any[] = []
+        const { filter } = req.query;
+        console.log(filter);
         
+        if (filter) {
+            games = await db.game.findMany({
+                where : {
+                    OR : [
+                        {
+                            blackPlayerId : user.id
+                        }, 
+                        {
+                            whitePlayerId : user.id
+                        }
+                    ],
+                    AND : [
+                        {
+                            id : {
+                                contains : String(filter)
+                            }
+                        }
+                    ]
+                },
+                include : {
+                    blackPlayer : true,
+                    whitePlayer : true
+                }
+            })
+        } else {
+            games = await db.game.findMany({
+                where : {
+                    OR : [
+                        {
+                            blackPlayerId : user.id
+                        }, 
+                        {
+                            whitePlayerId : user.id
+                        }
+                    ]
+                },
+                include : {
+                    blackPlayer : true,
+                    whitePlayer : true
+                }
+            })
+        
+        }
+
         res.json({
             success : true,
             data : games
