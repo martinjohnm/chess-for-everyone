@@ -1,13 +1,10 @@
 
 
 import { atom, selector } from "recoil"
-// import dotenv from "dotenv"
-// import path from "path"
 
-// Load root .env file
-//dotenv.config({ path: path.resolve(__dirname, './.env') });
+const be_url = import.meta.env.VITE_APP_BACKEND_URL
 
-const be_url = 'http://localhost:3000'
+
 
 export interface User {
     token: string;
@@ -29,6 +26,7 @@ export const userAtom = atom<User>({
                 'Content-Type': 'application/json',
             },
             credentials: 'include',
+
             });
             if (response.ok) {
             const data = await response.json();

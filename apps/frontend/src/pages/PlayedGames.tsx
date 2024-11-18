@@ -1,8 +1,8 @@
 import { Button } from "@repo/ui/button";
-import { useUser } from "@repo/store/useUser";
 import { useEffect, useState } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../store/src/hooks/useUser";
 
 export interface Player {
     id : string;

@@ -5,7 +5,7 @@ import { GameResult } from '../pages/Game';
 import { Result } from '@repo/common/types';
 import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
-import { movesAtom } from '@repo/store/chessBoard';
+import { movesAtom } from '../store/src/atoms/chessBoard';
 
 interface ModalProps {
   blackPlayer?: { id: string; name: string };

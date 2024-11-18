@@ -2,9 +2,9 @@ import { Chess, Color, Move, PieceSymbol, Square } from "chess.js";
 import { memo, useEffect, useState } from "react";
 import ChessSquare from "./chessboard/ChessSquare";
 import { useRecoilState } from "recoil";
-import { isBoardFlippedAtom, movesAtom, userSelectedMoveIndexAtom } from "@repo/store/chessBoard"
 import { MOVE } from "@repo/common/messages";
 import LegalMoveIndicator from "./chessboard/LegalMoveIndicator";
+import { isBoardFlippedAtom, movesAtom, userSelectedMoveIndexAtom } from "../store/src/atoms/chessBoard";
 
 
 export function isPromoting(chess: Chess, from: Square, to: Square) {

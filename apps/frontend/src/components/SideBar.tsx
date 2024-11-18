@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { FaChessKnight, FaGamepad } from 'react-icons/fa';
 import { FiHome } from 'react-icons/fi';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { windowSizeAtom, windowSizeLessThan960 } from '@repo/store/window.ts';
+
 import { useNavigate } from 'react-router-dom';
+import { windowSizeAtom, windowSizeLessThan960 } from '../store/src/atoms/window';
 const Sidebar  = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
 

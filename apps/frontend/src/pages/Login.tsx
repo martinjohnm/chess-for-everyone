@@ -1,7 +1,8 @@
-import { userAtom } from "@repo/store/userAtom";
+
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import { userAtom } from "../store/src/atoms/user";
 
 
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import Sidebar from './SideBar';
-import { windowSizeLessThan960 } from '@repo/store/window.ts';
 import { useRecoilValue } from 'recoil';
+import { windowSizeLessThan960 } from '../store/src/atoms/window';
 
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
