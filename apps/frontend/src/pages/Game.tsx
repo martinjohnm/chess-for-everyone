@@ -56,6 +56,12 @@ export const Game = () => {
         userSelectedMoveIndexRef.current = userSelectedMoveIndex;
     }, [userSelectedMoveIndex]);
     const user = useUser()
+
+    useEffect(() => {
+        if (!user) {
+          window.location.href = '/login';
+        }
+      }, [user]);
     useEffect(() => {
         if (!socket) {
             return;
