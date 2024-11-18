@@ -1,4 +1,4 @@
-import { useUser } from "@repo/store/useUser"
+
 import { useSocket } from "../hooks/useSocket";
 import { useEffect, useRef, useState } from "react";
 import { EXIT_GAME, GAME_ADDED, GAME_ENDED, GAME_JOINED, GAME_OVER, INIT_GAME, JOIN_ROOM, MOVE } from "@repo/common/messages";
@@ -7,13 +7,14 @@ import { ChessBoard, isPromoting } from "../components/ChessBoard";
 import { Button } from "@repo/ui/button";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { movesAtom, userSelectedMoveIndexAtom } from "@repo/store/chessBoard";
 import { Chess, Move } from "chess.js";
 import { MovesTable } from "../components/MovesTable";
 import { Result } from "@repo/common/types";
 import { ExitDialogBox } from "../components/ExitDialogBox";
 import GameEndModal from "../components/GameEndModal";
 import { ShareGame } from "../components/ShareGame";
+import { useUser } from "../store/src/hooks/useUser";
+import { movesAtom, userSelectedMoveIndexAtom } from "../store/src/atoms/chessBoard";
 
 
 export interface GameResult {

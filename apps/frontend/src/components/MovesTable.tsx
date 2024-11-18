@@ -1,6 +1,6 @@
-import { movesAtom } from "@repo/store/chessBoard"
 import { useEffect } from "react"
 import { useRecoilValue } from "recoil"
+import { movesAtom } from "../store/src/atoms/chessBoard"
 
 
 

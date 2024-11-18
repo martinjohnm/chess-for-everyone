@@ -12,7 +12,6 @@
   "dependencies": {
     "@material-tailwind/react": "^2.1.10",
     "@repo/common": "*",
-    "@repo/store": "*",
     "@repo/ui": "*",
     "@types/recoil": "^0.0.9",
     "react": "^18.3.1",

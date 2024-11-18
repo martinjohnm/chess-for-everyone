@@ -1,5 +1,5 @@
-import { useUser } from "@repo/store/useUser"
 import { useEffect, useState } from "react"
+import { useUser } from "../store/src/hooks/useUser"
 
 const ws_url = import.meta.env.VITE_WEBSOCKET_URL
 
