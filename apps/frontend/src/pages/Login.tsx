@@ -6,14 +6,15 @@ import { userAtom } from "../store/src/atoms/user";
 
 
 
-const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL ?? 'http://localhost:3000';
+const BACKEND_URL = import.meta.env.VITE_APP_BACKEND_URL ?? 'pooi';
 
 export const Login = () => {
 
   const navigate = useNavigate();
   const guestName = useRef<HTMLInputElement>(null);
-  const [_, setUser] = useRecoilState(userAtom);
+  const [user, setUser] = useRecoilState(userAtom);
 
+  console.log(user);
   
   const google = () => {
     window.open(`${BACKEND_URL}/auth/google`, '_self');
