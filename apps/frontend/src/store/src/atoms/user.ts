@@ -2,12 +2,7 @@
 
 import { atom, selector } from "recoil"
 
-// Load root .env file
-//dotenv.config({ path: path.resolve(__dirname, './.env') });
-
-const be_url = 'http://localhost:3000'
-
-const b = import.meta.env.VITE_APP_BACKEND_URL
+const be_url = import.meta.env.VITE_APP_BACKEND_URL
 
 
 
@@ -35,8 +30,6 @@ export const userAtom = atom<User>({
             });
             if (response.ok) {
             const data = await response.json();
-            console.log(b);
-            
             return data;
             }
         } catch (e) {
