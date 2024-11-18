@@ -11,6 +11,7 @@ import { Loader } from "./components/Loader"
 import Landing from "./pages/Landing"
 import { Layout } from "./components/Layout"
 import { PlayedGames } from "./pages/PlayedGames"
+import { Protected } from "./pages/Protected"
 
 
 
@@ -38,8 +39,8 @@ function AuthApp () {
           <Routes>
             
               <Route path="/" element={<Layout><Landing/></Layout>}/>
-              <Route path="/game/:gameId" element={<Layout><Game/></Layout>}/>
-              <Route path="/games" element={ <Layout><PlayedGames/></Layout>}/>
+              <Route path="/game/:gameId" element={<Protected><Layout><Game/></Layout></Protected>}/>
+              <Route path="/games" element={ <Protected><Layout><PlayedGames/></Layout></Protected>}/>
               <Route path="/login" element={<Login/>}/>
 
         
