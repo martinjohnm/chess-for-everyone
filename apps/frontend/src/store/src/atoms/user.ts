@@ -19,7 +19,6 @@ export const userAtom = atom<User>({
         key: 'user/default',
         get: async () => {
         try {
-            await new Promise(r => setTimeout(r, 1000))
             const response = await fetch(`${be_url}/auth/refresh`, {
             method: 'GET',
             headers: {
