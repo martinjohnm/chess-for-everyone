@@ -1,12 +1,12 @@
 
 
 import passport from 'passport';
-import dotenv from 'dotenv';
+import dotenv, { configDotenv } from 'dotenv';
 import db from "@repo/db/client"
 
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-
-
+configDotenv()
+const CB_URL = process.env.BACKEND_URL
 
 
 dotenv.config();
@@ -31,7 +31,7 @@ export function initPassport() {
       {
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CLIENT_SECRET,
-        callbackURL: '/auth/google/callback',
+        callbackURL: `${CB_URL}/auth/google/callback`,
       },
       async function (
         accessToken: string,

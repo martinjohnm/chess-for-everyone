@@ -158,13 +158,6 @@ export const ChessBoard = memo(
                                             })
                                             .map((move) => move.to)
                                             )
-
-                                            console.log(chess.moves({
-                                              verbose : true,
-                                              square : square?.square
-                                            }));
-                                            console.log("heai" , legalMoves);
-                                            
                                             
                                         } else {
                                           try {

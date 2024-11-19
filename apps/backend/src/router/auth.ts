@@ -7,7 +7,7 @@ import passport from "passport";
 
 const router = Router()
 
-const CLIENT_URL = process.env.AUTH_REDIRECT_URL ?? 'http://localhost:5173';
+const CLIENT_URL = process.env.FRONTEND_URL ?? 'http://localhost:5173';
 const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
 
@@ -98,7 +98,7 @@ router.get('/logout', (req: Request, res: Response) => {
         res.status(500).json({ error: 'Failed to log out' });
       } else {
         res.clearCookie('jwt');
-        res.redirect('http://localhost:5173/');
+        res.redirect(CLIENT_URL);
       }
     });
 });

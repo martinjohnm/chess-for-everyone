@@ -11,6 +11,7 @@ import { Loader } from "./components/Loader"
 import Landing from "./pages/Landing"
 import { Layout } from "./components/Layout"
 import { PlayedGames } from "./pages/PlayedGames"
+import { ViewGame } from "./pages/ViewGame"
 
 
 
@@ -41,7 +42,7 @@ function AuthApp () {
               <Route path="/game/:gameId" element={<Layout><Game/></Layout>}/>
               <Route path="/games" element={ <Layout><PlayedGames/></Layout>}/>
               <Route path="/login" element={<Login/>}/>
-
+              <Route path="/view/:gameId" element={<Layout><ViewGame/></Layout>}/>
         
           </Routes>
         </BrowserRouter>

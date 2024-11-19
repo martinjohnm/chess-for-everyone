@@ -94,4 +94,63 @@ router.get('/get', async (req: Request, res: Response) => {
       }
 });
 
+
+router.get('/getOne', async (req: Request, res: Response) => {
+    if (req.user) {
+        const user = req.user as UserDetails;
+        let game : any = {}
+        const { gameId } = req.query;
+        
+        if (gameId) {
+            game = await db.game.findFirst({
+                where : {
+                   id : String(gameId)
+                },
+                include : {
+                    blackPlayer : true,
+                    whitePlayer : true
+                }
+            })
+        } else {
+            game = await db.game.findMany({
+                where : {
+                    OR : [
+                        {
+                            blackPlayerId : user.id
+                        }, 
+                        {
+                            whitePlayerId : user.id
+                        }
+                    ]
+                },
+                include : {
+                    blackPlayer : true,
+                    whitePlayer : true
+                }
+            })
+        
+        }
+
+        res.json({
+            success : true,
+            data : game
+        });
+
+      }else if (req.cookies && req.cookies.guest) {
+        const decoded = jwt.verify(req.cookies.guest, JWT_SECRET) as userJwtClaims;
+
+        const games = await db.game.findMany({
+            where: {
+                blackPlayerId: decoded.userId,
+            },
+        });
+      
+      
+      } else {
+        res.status(401).json({ success: false, message: 'Unauthorized' });
+      }
+});
+
+
+
 export default router

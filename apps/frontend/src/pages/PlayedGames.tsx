@@ -34,7 +34,7 @@ export const PlayedGames = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-              const response = await fetch(be_url + `/games/get?filter=${debouncedSearchQuery}`,{
+              const response = await fetch(be_url + `/games/get?gameId=${debouncedSearchQuery}`,{
                 method : "get",
                 headers : {"Content-Type" : "application/json"},
                 credentials : "include",
@@ -63,6 +63,12 @@ export const PlayedGames = () => {
 
    
     const user = useUser()
+
+    useEffect(() => {
+        if (!user) {
+            naavi("/")
+        }
+    }, [user])
 
     return <div className="text-slate-300 h-screen container mx-auto overflow-auto">
         <div className="fixed mx-auto container">
@@ -98,7 +104,7 @@ export const PlayedGames = () => {
                    
                 </div>
                 <div className="items-center justify-start flex">
-                    {user.id !== game.whitePlayer.id ? `${game.whitePlayer.email}` : `${game.blackPlayer.email}`}
+                    {user?.id !== game.whitePlayer.id ? `${game.whitePlayer.email}` : `${game.blackPlayer.email}`}
                    
                 </div>
                 
@@ -108,7 +114,9 @@ export const PlayedGames = () => {
                 <div className="items-center justify-start flex">
                     {game.status === "IN_PROGRESS" ? <Button onclick={() => {
                         naavi(`/game/${game.id}`)
-                    }} className="p-2 bg-green-500 rounded-md text-zinc-50 hover:bg-green-700 w-36">Continue</Button> : <Button className="p-2 bg-red-500 rounded-md text-zinc-50 hover:bg-green-700 w-36">See game</Button>}
+                    }} className="p-2 bg-green-500 rounded-md text-zinc-50 hover:bg-green-700 w-36">Continue</Button> : <Button className="p-2 bg-red-500 rounded-md text-zinc-50 hover:bg-green-700 w-36" onclick={() => {
+                        naavi(`/view/${game.id}`)
+                    }}>See status</Button>}
                 </div>
             </div>
         ))}

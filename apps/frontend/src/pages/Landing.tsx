@@ -1,5 +1,7 @@
 import { Button } from "@repo/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../store/src/hooks/useUser";
+import { useEffect } from "react";
 
 
 export default function Landing() {
@@ -7,6 +9,12 @@ export default function Landing() {
 
 
     const navigate = useNavigate();
+
+    const user = useUser()
+
+    useEffect(() => {
+      
+    }, [user])
 
     return (
         <div className="p-4">
