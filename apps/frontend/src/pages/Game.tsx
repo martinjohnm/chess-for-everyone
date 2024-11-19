@@ -37,6 +37,8 @@ export const Game = () => {
 
     const socket = useSocket()
     const { gameId } = useParams();
+
+
  
     const navigate = useNavigate()    
     
@@ -53,6 +55,8 @@ export const Game = () => {
 
     const [isDialogOpen, setDialogOpen] = useState(false);
 
+    
+
     useEffect(() => {
         userSelectedMoveIndexRef.current = userSelectedMoveIndex;
     }, [userSelectedMoveIndex]);
@@ -63,6 +67,7 @@ export const Game = () => {
           window.location.href = '/login';
         }
       }, [user]);
+
     useEffect(() => {
         if (!socket) {
             return;
@@ -157,12 +162,17 @@ export const Game = () => {
                     setMoves([])
                     setStarted(false)
                     setAdded(false)
+                    break
+                default:
+                    break;
 
 
             }
         }
 
-        if (gameId !== "random") {
+       
+
+        if (gameId !== "random" ) {
             socket.send(
                 JSON.stringify({
                     type : JOIN_ROOM,

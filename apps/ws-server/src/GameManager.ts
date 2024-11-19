@@ -30,6 +30,12 @@ export class GameManager {
       }
       
       this.users = this.users.filter((user) => user.socket !== socket)
+      // if a user initiates a game and then suddenly leave there should be a pendinggameId without any 
+      // users so we need to delete that before sending socket message
+      if (this.users.length === 0 ) {
+        this.pendingGameId = null
+      }
+      
       socketManager.removeUser(user)
     }
 
@@ -40,12 +46,13 @@ export class GameManager {
     private addHandler(user : User) {
       user.socket.on("message", async (data) => {
         const message = JSON.parse(data.toString());
-
+    
         if (message.type === INIT_GAME) {
           // If a pendingGameId is present in this class it will map the gameId to user object 
           // and after that the secondPlayer of the game object is updated by this users userId 
           // (there we send INIT_GAME broadcast to all connected sockets the room)
           if (this.pendingGameId) {
+         
             const game = this.games.find((x) => x.gameId === this.pendingGameId)
             if (!game) {
               console.error("Pending game not found");
@@ -72,6 +79,7 @@ export class GameManager {
           // also mean that there is not a user waiting for a random player to join, so we need to make
           // the current user object as the waiting player who is waiting for someone to join
           } else {
+          
             const game = new Game(user.userId, null) 
             this.games.push(game)
             this.pendingGameId = game.gameId;
