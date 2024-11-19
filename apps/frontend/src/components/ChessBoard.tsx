@@ -106,7 +106,7 @@ export const ChessBoard = memo(
                     const piece = square && square.type
                     const isKingInCheckSquare = piece === "k" && square?.color === chess.turn() && chess.inCheck()
                     
-                    return <div key={j} className={`w-14 h-14 sm-two:w-14 sm-two:h-14 sm-three:w-14 sm-three:h-14 lg:w-20 lg:h-20 lg-two:w-22 lg-two:h-22 lg-three:w-24 lg-three:h-24 ${(i+j)%2==0 ? "bg-[#ebecd0]" : "bg-[#739552]"} ${isKingInCheckSquare ? "border-4 border-red-600":""}`}>
+                    return <div key={j} className={`w-12 h-12 sm-two:w-14 sm-two:h-14 sm-three:w-14 sm-three:h-14 lg:w-20 lg:h-20 lg-two:w-22 lg-two:h-22 lg-three:w-24 lg-three:h-24 ${(i+j)%2==0 ? "bg-[#ebecd0]" : "bg-[#739552]"} ${isKingInCheckSquare ? "border-4 border-red-600":""}`}>
                             <div className="w-full justify-center flex h-full items-center flex-col relative"
                                     onClick={() => {
                                         
