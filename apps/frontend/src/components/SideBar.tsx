@@ -40,6 +40,25 @@ const Sidebar  = () => {
     setIsCollapsed(!isCollapsed);
   };
 
+
+  const logout = async() => {
+
+    try {
+      await fetch(be_url + `/auth/logout`,{
+        method : "get",
+        headers : {"Content-Type" : "application/json"},
+        credentials : "include",
+        })
+      
+      navigate("/")
+      
+      
+    } catch (error) {
+      
+    }
+
+}
+
   if (windowisGreater960) {
     return (
             
@@ -48,13 +67,25 @@ const Sidebar  = () => {
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Chess</span>
          
-          <div className='text-white'>
+          <div className='text-white cursor-pointer p-1 bg-blue-900 hover:bg-blue-950 hover:text-violet-100 rounded-md' onClick={() => {
+            navigate("/")
+          }}>
             home
           </div>
-          <div className='text-white'>
+          <div className='text-white cursor-pointer p-1 bg-blue-900 hover:bg-blue-950 hover:text-violet-100 rounded-md' onClick={() => {
+              navigate("/games")
+            }}>
             games
           </div>
-          
+
+          { user &&
+            <div className='text-white cursor-pointer p-1 bg-red-600 hover:bg-red-650 hover:text-violet-100 rounded-md' onClick={logout}>
+                Logout
+            </div> }
+            { !user &&
+            <div className='text-white cursor-pointer p-1 bg-green-600 hover:bg-green-650 hover:text-violet-100 rounded-md' onClick={login}>
+                Logout
+            </div> }
 
         </div>
       </nav>
@@ -63,23 +94,6 @@ const Sidebar  = () => {
   }
 
 
-  const logout = async() => {
-
-      try {
-        await fetch(be_url + `/auth/logout`,{
-          method : "get",
-          headers : {"Content-Type" : "application/json"},
-          credentials : "include",
-          })
-        
-        navigate("/")
-        
-        
-      } catch (error) {
-        
-      }
-
-  }
 
   
   return (
