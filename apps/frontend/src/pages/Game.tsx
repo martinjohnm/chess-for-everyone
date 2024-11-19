@@ -69,7 +69,6 @@ export const Game = () => {
         }
         socket.onmessage = (event) => {
             const message = JSON.parse(event.data);
-            console.log("message" ,message);
             
             switch (message.type) {
                 case GAME_ADDED: 
@@ -202,7 +201,7 @@ export const Game = () => {
         )}    
         {started && (
             <div className="justify-center flex pt-4 text-white">
-            {(user.id === gameMetadata?.blackPlayer?.id ? 'b' : 'w') ===
+            {(user?.id === gameMetadata?.blackPlayer?.id ? 'b' : 'w') ===
             chess.turn()
                 ? 'Your turn'
                 : "Opponent's turn"}
@@ -218,7 +217,7 @@ export const Game = () => {
                     board = {board} 
                     socket={socket}
                     myColor={
-                        user.id === gameMetadata?.blackPlayer?.id ? 'b' : 'w'
+                        user?.id === gameMetadata?.blackPlayer?.id ? 'b' : 'w'
                     }
                     started={started}
                 />
