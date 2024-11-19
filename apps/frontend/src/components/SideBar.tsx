@@ -83,7 +83,7 @@ const Sidebar  = () => {
                 Logout
             </div> }
             { !user &&
-            <div className='text-white cursor-pointer p-1 bg-green-600 hover:bg-green-650 hover:text-violet-100 rounded-md' onClick={login}>
+            <div className='text-white cursor-pointer p-1 bg-green-600 hover:bg-green-650 hover:text-violet-100 rounded-md' onClick={() => navigate("/login")}>
                 Logout
             </div> }
 
