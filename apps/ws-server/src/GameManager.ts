@@ -32,9 +32,13 @@ export class GameManager {
       this.users = this.users.filter((user) => user.socket !== socket)
       // if a user initiates a game and then suddenly leave there should be a pendinggameId without any 
       // users so we need to delete that before sending socket message
+
       if (this.users.length %2 == 0 ) {
+        
+        this.removeGame(String(this.pendingGameId))
         this.pendingGameId = null
       }
+
       
       socketManager.removeUser(user)
     }
